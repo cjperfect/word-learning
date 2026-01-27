@@ -12,7 +12,9 @@ interface ApiResponse<T = any> {
 
 export const vocabApi = {
   create: async (content: string): Promise<VocabEntry> => {
+    console.log('API call: POST /vocab/create', { content });
     const response = await axios.post<ApiResponse<VocabEntry>>(`${API_BASE}/vocab/create`, { content });
+    console.log('API response:', response.data);
     return response.data.data;
   },
 

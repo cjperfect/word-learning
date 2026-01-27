@@ -9,10 +9,12 @@ interface MatrixInputProps {
 
 export default function MatrixInput({ onSave }: MatrixInputProps) {
   const [inputs, setInputs] = useState<string[]>(Array(8).fill(''));
+  const [focusedIndex, setFocusedIndex] = useState(0);
+  const [isComposing, setIsComposing] = useState(false);
   const controls = useAnimation();
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
-  // Update active input index
+  // Find first empty input index
   const activeIndex = inputs.findIndex((i) => i === '');
 
   const handleInputChange = async (index: number, value: string) => {
@@ -21,25 +23,46 @@ export default function MatrixInput({ onSave }: MatrixInputProps) {
     setInputs(newInputs);
   };
 
+  const handleInputFocus = (index: number) => {
+    // Only allow focusing if all previous inputs are filled
+    const canFocus = inputs.slice(0, index).every(input => input.trim() !== '');
+    if (canFocus) {
+      setFocusedIndex(index);
+    } else {
+      // If can't focus, find the first empty input and focus it
+      const firstEmptyIndex = inputs.findIndex(i => i === '');
+      if (firstEmptyIndex !== -1) {
+        setFocusedIndex(firstEmptyIndex);
+        inputRefs.current[firstEmptyIndex]?.focus();
+      }
+    }
+  };
+
   const handleKeyDown = async (
     index: number,
     e: React.KeyboardEvent<HTMLInputElement>
   ) => {
-    // Space - auto skip to next input
-    if (e.code === 'Space' && inputs[index].trim()) {
+    // Space - auto skip to next input (only when not using IME)
+    if (e.code === 'Space' && inputs[index].trim() && !isComposing) {
       e.preventDefault();
       const nextIndex = index + 1;
 
       if (nextIndex < 8) {
-        // Trigger pulse animation on current input
-        await controls.start({
-          scale: [1, 0.95, 1],
-          borderColor: ['#ffffff20', '#60a5fa', '#ffffff20'],
-          transition: { duration: 0.3 },
-        });
+        // Check if next input can be focused
+        const canFocusNext = inputs.slice(0, nextIndex).every(input => input.trim() !== '');
 
-        // Focus next input
-        inputRefs.current[nextIndex]?.focus();
+        if (canFocusNext) {
+          // Trigger pulse animation on current input
+          await controls.start({
+            scale: [1, 0.95, 1],
+            borderColor: ['#ffffff20', '#f97316', '#ffffff20'],
+            transition: { duration: 0.3 },
+          });
+
+          // Move focus to next input
+          setFocusedIndex(nextIndex);
+          inputRefs.current[nextIndex]?.focus();
+        }
       }
     }
 
@@ -98,19 +121,22 @@ export default function MatrixInput({ onSave }: MatrixInputProps) {
               value={value}
               onChange={(e) => handleInputChange(index, e.target.value)}
               onKeyDown={(e) => handleKeyDown(index, e)}
-              placeholder={index === activeIndex ? '输入...' : ''}
+              onFocus={() => handleInputFocus(index)}
+              onCompositionStart={() => setIsComposing(true)}
+              onCompositionEnd={() => setIsComposing(false)}
+              placeholder={index === focusedIndex ? '输入...' : ''}
               className={`
                 w-full px-4 py-3 text-gray-800 text-center text-lg
                 bg-white border-b-2 outline-none
                 transition-all duration-200
-                ${index === activeIndex
+                ${index === focusedIndex
                   ? 'border-orange-400 focus:border-orange-500'
                   : 'border-gray-200 focus:border-gray-300'
                 }
                 placeholder:text-gray-300
               `}
             />
-            {index === activeIndex && (
+            {index === focusedIndex && (
               <motion.div
                 layoutId="active-input"
                 className="absolute -bottom-0.5 left-0 right-0 h-0.5 bg-orange-400"
