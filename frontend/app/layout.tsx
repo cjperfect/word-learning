@@ -32,7 +32,7 @@ export default function RootLayout({
 
         {/* Main content area */}
         <main className="relative z-10 flex items-center justify-center min-h-screen">
-          <div className="container mx-auto px-4 py-8">
+          <div className="container mx-auto px-6 sm:px-8 py-12 max-w-7xl">
             {children}
           </div>
         </main>

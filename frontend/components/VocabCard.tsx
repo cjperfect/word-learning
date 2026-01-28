@@ -112,7 +112,7 @@ export default function VocabCard({ entry, onUpdate, onDelete, className = '' }:
         onClick={handleClick}
         whileHover={{ y: -2 }}
         className={`
-          relative overflow-hidden rounded-xl px-8 py-6 cursor-pointer
+          relative overflow-hidden rounded-xl px-6 sm:px-8 py-5 sm:py-6 cursor-pointer
           bg-white
           border border-gray-200
           transition-all duration-300
@@ -123,7 +123,7 @@ export default function VocabCard({ entry, onUpdate, onDelete, className = '' }:
         {/* Content */}
         <motion.div layout="position" className="relative">
           <div className="flex items-center justify-between gap-4">
-            <div className="flex-1">
+            <div className="flex-1 p-2">
               <h3 className="text-2xl font-bold text-gray-800 mb-2 leading-tight">
                 {entry.content}
               </h3>
@@ -228,7 +228,7 @@ export default function VocabCard({ entry, onUpdate, onDelete, className = '' }:
                       initial={{ x: -20, opacity: 0 }}
                       animate={{ x: 0, opacity: 1 }}
                       transition={{ delay: 0.25 }}
-                      className="bg-orange-50 rounded-xl p-4 border border-orange-200"
+                      className="bg-orange-50 rounded-xl p-4 sm:p-5 border border-orange-200"
                     >
                       <div className="flex items-center gap-2 mb-2">
                         <span className="text-lg">📖</span>
@@ -244,7 +244,7 @@ export default function VocabCard({ entry, onUpdate, onDelete, className = '' }:
                       initial={{ x: -20, opacity: 0 }}
                       animate={{ x: 0, opacity: 1 }}
                       transition={{ delay: 0.3 }}
-                      className="bg-gray-50 rounded-xl p-4 border border-gray-200"
+                      className="bg-gray-50 rounded-xl p-4 sm:p-5 border border-gray-200"
                     >
                       <div className="flex items-center gap-2 mb-2">
                         <span className="text-lg">🔍</span>
@@ -260,7 +260,7 @@ export default function VocabCard({ entry, onUpdate, onDelete, className = '' }:
                       initial={{ x: -20, opacity: 0 }}
                       animate={{ x: 0, opacity: 1 }}
                       transition={{ delay: 0.35 }}
-                      className="bg-gray-50 rounded-xl p-4 border border-gray-200"
+                      className="bg-gray-50 rounded-xl p-4 sm:p-5 border border-gray-200"
                     >
                       <div className="flex items-center gap-2 mb-3">
                         <span className="text-lg">✨</span>
@@ -292,7 +292,7 @@ export default function VocabCard({ entry, onUpdate, onDelete, className = '' }:
                       initial={{ scale: 0.95, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
                       transition={{ delay: 0.5 }}
-                      className="bg-gradient-to-br from-orange-50 to-orange-100/50 rounded-xl p-4 border border-orange-300"
+                      className="bg-gradient-to-br from-orange-50 to-orange-100/50 rounded-xl p-4 sm:p-5 border border-orange-300"
                     >
                       <div className="flex items-center gap-2 mb-2">
                         <span className="text-lg">💡</span>

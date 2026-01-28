@@ -25,7 +25,7 @@ export default function Home() {
       {/* Vocab Grid */}
       {isLoading ? (
         <div className="flex justify-center items-center py-20">
-          <div className="bg-white rounded-2xl px-8 py-4 border border-gray-200 shadow-sm">
+          <div className="bg-white rounded-2xl px-10 py-6 border border-gray-200 shadow-sm">
             <p className="text-gray-500">加载中...</p>
           </div>
         </div>

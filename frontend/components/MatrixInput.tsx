@@ -55,7 +55,7 @@ export default function MatrixInput({ onSave }: MatrixInputProps) {
           // Trigger pulse animation on current input
           await controls.start({
             scale: [1, 0.95, 1],
-            borderColor: ['#ffffff20', '#f97316', '#ffffff20'],
+            borderColor: ['#d1d5db', '#6366f1', '#d1d5db'],
             transition: { duration: 0.3 },
           });
 
@@ -90,21 +90,22 @@ export default function MatrixInput({ onSave }: MatrixInputProps) {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center gap-6 mb-12">
+    <div className="flex flex-col items-center justify-center gap-6 sm:gap-8 mb-12 sm:mb-16">
       {/* Title */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
+        className="text-center px-4"
       >
-        <h1 className="text-4xl font-bold text-gradient mb-2">
+        <h1 className="text-4xl sm:text-5xl font-bold text-gradient mb-2">
           词汇流 AI 2.0
         </h1>
-        <p className="text-gray-500 text-sm">输入单词 • 按空格键 • 按回车键保存</p>
+        <p className="text-gray-500 text-sm sm:text-base">输入单词 • 按空格键 • 按回车键保存</p>
       </motion.div>
 
       {/* Matrix Input */}
-      <div className="flex flex-wrap justify-center gap-3 w-full max-w-4xl">
+      <div className="flex flex-wrap justify-center gap-3 w-full max-w-4xl px-4">
         {inputs.map((value, index) => (
           <motion.div
             key={index}
@@ -127,19 +128,20 @@ export default function MatrixInput({ onSave }: MatrixInputProps) {
               placeholder={index === focusedIndex ? '输入...' : ''}
               className={`
                 w-full px-4 py-3 text-gray-800 text-center text-lg
-                bg-white border-b-2 outline-none
+                bg-transparent border-b-2 outline-none
                 transition-all duration-200
                 ${index === focusedIndex
-                  ? 'border-orange-400 focus:border-orange-500'
-                  : 'border-gray-200 focus:border-gray-300'
+                  ? 'border-indigo-500 focus:border-indigo-600'
+                  : 'border-gray-300 focus:border-indigo-400'
                 }
-                placeholder:text-gray-300
+                placeholder:text-gray-400
+                caret-indigo-500
               `}
             />
             {index === focusedIndex && (
               <motion.div
                 layoutId="active-input"
-                className="absolute -bottom-0.5 left-0 right-0 h-0.5 bg-orange-400"
+                className="absolute -bottom-0.5 left-0 right-0 h-0.5 bg-gradient-to-r from-indigo-400 via-indigo-500 to-indigo-600"
                 initial={false}
                 transition={{
                   type: 'spring',

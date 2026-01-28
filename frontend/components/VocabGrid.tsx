@@ -20,9 +20,9 @@ export default function VocabGrid({ entries, onUpdate, onDelete }: VocabGridProp
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="text-center py-20"
+        className="text-center py-16 sm:py-20"
       >
-        <div className="bg-white rounded-2xl p-12 inline-block border border-gray-200 shadow-sm">
+        <div className="bg-white rounded-2xl p-10 sm:p-12 inline-block border border-gray-200 shadow-sm">
           <div className="text-6xl mb-4">📝</div>
           <h3 className="text-xl font-semibold text-gray-800 mb-2">
             开始你的词汇学习之旅
@@ -36,7 +36,7 @@ export default function VocabGrid({ entries, onUpdate, onDelete }: VocabGridProp
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
       {dates.map((date, dateIndex) => (
         <div key={date} className="contents">
           {/* Date header */}
@@ -44,12 +44,12 @@ export default function VocabGrid({ entries, onUpdate, onDelete }: VocabGridProp
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: dateIndex * 0.1 }}
-            className="col-span-full mb-2 mt-6 first:mt-0"
+            className="col-span-full mb-3 sm:mb-4 mt-8 sm:mt-10 first:mt-0"
           >
             <h2 className="text-2xl font-bold text-gradient">
               {format(new Date(date), 'yyyy年MM月dd日', { locale: zhCN })}
             </h2>
-            <p className="text-sm text-gray-400 mt-1">
+            <p className="text-sm text-gray-400 mt-1.5">
               {entries[date].length} 个词条
             </p>
           </motion.div>
