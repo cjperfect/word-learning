@@ -4,6 +4,15 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { VocabEntry } from '@/lib/types';
 import { vocabApi } from '@/lib/api';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
 
 interface VocabCardProps {
   entry: VocabEntry;
@@ -16,6 +25,7 @@ export default function VocabCard({ entry, onUpdate, onDelete, className = '' }:
   const [isExpanded, setIsExpanded] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [analysis, setAnalysis] = useState(entry.aiAnalysis);
 
   const handleClick = async () => {
@@ -35,13 +45,13 @@ export default function VocabCard({ entry, onUpdate, onDelete, className = '' }:
     setIsExpanded(!isExpanded);
   };
 
-  const handleDelete = async (e: React.MouseEvent) => {
+  const handleDeleteClick = (e: React.MouseEvent) => {
     e.stopPropagation(); // 防止触发卡片展开
+    setShowDeleteDialog(true);
+  };
 
-    if (!confirm('确定要删除这个词条吗？')) {
-      return;
-    }
-
+  const handleDeleteConfirm = async () => {
+    setShowDeleteDialog(false);
     setIsDeleting(true);
     try {
       await vocabApi.delete(entry.id);
@@ -52,6 +62,10 @@ export default function VocabCard({ entry, onUpdate, onDelete, className = '' }:
     } finally {
       setIsDeleting(false);
     }
+  };
+
+  const handleDeleteCancel = () => {
+    setShowDeleteDialog(false);
   };
 
   // Helper function to parse sentence with translation
@@ -128,11 +142,11 @@ export default function VocabCard({ entry, onUpdate, onDelete, className = '' }:
             <div className="flex items-center gap-2">
               {/* Delete button */}
               <motion.button
-                onClick={handleDelete}
+                onClick={handleDeleteClick}
                 disabled={isDeleting}
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.95 }}
-                className="flex-shrink-0 p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-shrink-0 p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                 title="删除"
               >
                 {isDeleting ? (
@@ -303,6 +317,103 @@ export default function VocabCard({ entry, onUpdate, onDelete, className = '' }:
           )}
         </AnimatePresence>
       </motion.div>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <div className="flex flex-col items-center gap-4 pt-4">
+              {/* Warning Icon with Animation */}
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ type: "spring", stiffness: 200, damping: 15 }}
+                className="relative"
+              >
+                <motion.div
+                  animate={{
+                    scale: [1, 1.1, 1],
+                    rotate: [0, 5, -5, 0],
+                  }}
+                  transition={{
+                    duration: 0.5,
+                    repeat: Infinity,
+                    repeatDelay: 2,
+                  }}
+                  className="w-16 h-16 rounded-full bg-gradient-to-br from-red-50 to-red-100 flex items-center justify-center border-2 border-red-200"
+                >
+                  <svg
+                    width="32"
+                    height="32"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="text-red-500"
+                  >
+                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                    <line x1="12" y1="9" x2="12" y2="13"></line>
+                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                  </svg>
+                </motion.div>
+              </motion.div>
+
+              <div className="text-center space-y-2">
+                <DialogTitle className="text-xl font-bold text-gray-900">
+                  确认删除
+                </DialogTitle>
+                <DialogDescription className="text-base text-gray-600 px-4">
+                  确定要删除词条 <span className="font-semibold text-gray-900">「{entry.content}」</span> 吗？
+                </DialogDescription>
+                <p className="text-sm text-red-600 font-medium">
+                  此操作无法撤销
+                </p>
+              </div>
+            </div>
+          </DialogHeader>
+
+          <DialogFooter className="sm:justify-center gap-3 pt-4 pb-2">
+            <motion.div
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              <Button
+                variant="outline"
+                onClick={handleDeleteCancel}
+                className="min-w-[100px] border-gray-300 text-gray-700 hover:bg-gray-50 hover:text-gray-900 cursor-pointer"
+              >
+                取消
+              </Button>
+            </motion.div>
+            <motion.div
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              <Button
+                variant="default"
+                onClick={handleDeleteConfirm}
+                disabled={isDeleting}
+                className="min-w-[100px] bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white border-0 shadow-lg shadow-red-200 cursor-pointer"
+              >
+                {isDeleting ? (
+                  <span className="flex items-center gap-2">
+                    <motion.div
+                      animate={{ rotate: 360 }}
+                      transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                      className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full"
+                    />
+                    删除中
+                  </span>
+                ) : (
+                  '确认删除'
+                )}
+              </Button>
+            </motion.div>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </motion.div>
   );
 }
